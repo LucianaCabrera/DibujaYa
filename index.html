@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<title>drawing</title>
+</head>
+<body>
+	<div class="container">
+		<div class="titulo">¡Mini juego que consiste en dibujar con diferentes tamaños de grosor!</div>
+		<div class="texto">
+		  <p>¡Bienvenido! Aquí podrás disfrutar de un divertido juego donde podrás dibujar utilizando diferentes tamaños de grosor. ¡Diviértete!</p>
+		</div>
+	  </div>
+	<canvas id="canvas" width="380" height="380"></canvas>
+	<div class="toolbox">
+		<button id="decrease">-</button>
+		<span id="size">10</span>
+		<button id="increase">+</button>
+		<input type="color" id="color" class="colorInput">
+		<button id="clear"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+			<path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg></button>
+	</div>
+	<script>
+		const canvas = document.getElementById('canvas'); 
+		const increaseBtn = document.getElementById('increase'); 
+		const decreaseBtn = document.getElementById('decrease'); 
+		const sizeEL = document.getElementById('size');
+		const colorEL = document.getElementById('color'); 
+		const clearEL = document.getElementById('clear'); 
+		const ctx = canvas.getContext('2d'); 
+		let size =10
+		let isPressed = false
+		let color = colorEL.value
+		let x 
+		let y 
+		canvas.addEventListener('mousedown',(e)=>{
+			isPressed = true
+			x = e.offsetX
+			y = e.offsetY
+		})
+		document.addEventListener('mouseup',(e)=>{
+			isPressed = false
+			x = undefined
+			y = undefined
+		})
+		canvas.addEventListener('mousemove', (e) =>{
+			if (isPressed) {
+				const x2 = e.offsetX
+				const y2 = e.offsetY
+				drawCircle(x2, y2)
+				drawLine(x, y, x2, y2)
+				x = x2
+				y = y2
+			}
+		})
+		function drawCircle(x, y){
+			ctx.beginPath();
+			ctx.arc(x, y, size, 0, Math.PI*2)
+			ctx.fillStyle = color
+			ctx.fill()
+		}
+		function drawLine(x1, y1,x2, y2){
+			ctx.beginPath()
+			ctx.moveTo(x1, y1)
+			ctx.lineTo(x2, y2)
+			ctx.strokeStyle = color
+			ctx.lineWidth = size * 2
+			ctx.stroke()
+		}
+		function updateSizeOnScreen(){
+			sizeEL.innerText = size
+		}
+		increaseBtn.addEventListener('click', () => {
+			size +=5
+			if (size >50) {
+				size =50
+			}
+			updateSizeOnScreen()
+		})
+		decreaseBtn.addEventListener('click', () => {
+			size -=5
+			if (size <5) {
+				size =5
+			}
+			updateSizeOnScreen()
+		})
+		colorEL.addEventListener('change', (e) => color = e.target.value) 
+		clearEL.addEventListener('click', () => ctx.clearRect(0,0,canvas.width, canvas.height))
+	</script>
+	</script>
+		
+</body>
+</html>
